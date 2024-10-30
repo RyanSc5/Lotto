@@ -1,0 +1,71 @@
+﻿@model Lotto.Dtos.LoginDto
+
+@{
+    ViewData["Title"] = "登入";
+}
+
+<style>
+    body {
+        background-color: #f0f2f5; /* 背景顏色 */
+    }
+
+    .card {
+        max-width: 100%; /* 卡片最大寬度 */
+        padding: 20px;
+    }
+
+    .form-control {
+        height: 45px; /* 提高輸入框高度 */
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        height: 45px; /* 提高按鈕高度 */
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .text-primary {
+        font-size: 1.5rem; /* 提高標題字體 */
+    }
+</style>
+
+
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card shadow-lg border-0" style="width: 22rem; border-radius: 15px;">
+        <div class="card-body p-4">
+            <h2 class="text text-primary mb-4">登入</h2>
+            <hr />
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Login" class="form-label text-muted"></label>
+                    <input asp-for="Login" class="form-control"  />
+                    <span asp-validation-for="Login" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="Password" class="form-label text-muted"></label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <input type="submit" value="登入" class="btn btn-primary" />
+                </div>
+                <hr />
+
+                <div class="text-center mt-3">
+                    <a asp-action="Findpassword" class="text-muted small fw-semibold" style="text-decoration: none;">忘記密碼</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

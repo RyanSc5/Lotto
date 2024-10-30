@@ -1,0 +1,119 @@
+﻿@model Lotto.Dtos.BetgameDto
+
+@{
+    ViewData["Title"] = "下注遊戲";
+}
+
+<h1 class="text-center my-4">下注遊戲</h1>
+
+<div class="container">
+    <form asp-action="Betgame" method="post" class="needs-validation" novalidate>
+        <div id="betFormContainer">
+            <!-- 初始的下注行 -->
+            <div class="bet-group row align-items-center mb-3">
+                <div class="col-md-2">
+                    <label asp-for="Game" class="form-label">遊戲名稱</label>
+                    <input asp-for="Game" name="Game" class="form-control" value="LottoNumber" readonly />
+                </div>
+
+                <div class="col-md-2">
+                    <label asp-for="PlayerName" class="form-label">玩家名稱</label>
+                    <input asp-for="PlayerName" name="PlayerName" class="form-control" value="@ViewBag.PlayerName" readonly />
+                </div>
+
+                <div class="col-md-1">
+                    <label asp-for="Betamount" class="form-label">下注金額</label>
+                    <input asp-for="Betamount" name="Betamount" class="form-control" type="number" value="100" readonly />
+                </div>
+
+                <!-- 動態生成數字輸入欄位 -->
+                <div class="col-md-1">     
+                    <label class="form-label">號碼 1</label>
+                    <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                    
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label">號碼 2</label>
+                    <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                    
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label">號碼 3</label>
+                    <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                    
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label">號碼 4</label>
+                    <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                    
+                </div>
+
+                <div class="col-md-2 text-center">                    
+                    <button type="button" class="btn btn-success add-bet">新增一組</button>
+                    <span asp-validation-for="Numbers" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">下注</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 監聽 "新增一組" 按鈕事件
+            document.querySelector('#betFormContainer').addEventListener('click', function (event) {
+                if (event.target.classList.contains('add-bet')) {
+                    addNewBetRow();
+                }
+            });
+        });
+
+        function addNewBetRow() {
+            // 新的下注行 HTML 結構
+            var newBetRow = `
+                                <div class="bet-group row align-items-center mb-3">
+                                    <div class="col-md-2">
+                                        <input name="Game" class="form-control" value="LottoNumber" readonly required />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input name="PlayerName" class="form-control" value="@ViewBag.PlayerName" readonly />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input name="Betamount" class="form-control" type="number" value="100" readonly />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <button type="button" class="btn btn-danger remove-bet">刪除此組</button>
+                                    </div>
+                                </div>`;
+
+            // 將新的下注行插入表單容器中
+            document.querySelector('#betFormContainer').insertAdjacentHTML('beforeend', newBetRow);
+        }
+
+        // 監聽 "刪除此組" 按鈕事件
+        document.querySelector('#betFormContainer').addEventListener('click', function (event) {
+            if (event.target.classList.contains('remove-bet')) {
+                event.target.closest('.bet-group').remove();
+            }
+        });
+    </script>
+}

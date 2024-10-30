@@ -1,0 +1,109 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Programming Language\\.Net Core MVC\\Lotto\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\views\\member\\findtran.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:views\\member\\findtran.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\views\\member\\betgame.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:views\\member\\betgame.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\dtos\\betgamedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:dtos\\betgamedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\attribute\\numberrangeattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:attribute\\numberrangeattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Findtran.cshtml",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Findtran.cshtml",
+              "RelativeDocumentMoniker": "Views\\Member\\Findtran.cshtml",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Findtran.cshtml",
+              "RelativeToolTip": "Views\\Member\\Findtran.cshtml",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAuwNAAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-30T08:05:04.969Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "NumberRangeAttribute.cs",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Attribute\\NumberRangeAttribute.cs",
+              "RelativeDocumentMoniker": "Attribute\\NumberRangeAttribute.cs",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Attribute\\NumberRangeAttribute.cs",
+              "RelativeToolTip": "Attribute\\NumberRangeAttribute.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T07:57:56.954Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BetgameDto.cs",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Dtos\\BetgameDto.cs",
+              "RelativeDocumentMoniker": "Dtos\\BetgameDto.cs",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Dtos\\BetgameDto.cs",
+              "RelativeToolTip": "Dtos\\BetgameDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T07:46:00.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Betgame.cshtml",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Betgame.cshtml",
+              "RelativeDocumentMoniker": "Views\\Member\\Betgame.cshtml",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Betgame.cshtml",
+              "RelativeToolTip": "Views\\Member\\Betgame.cshtml",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAADcAAABSAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-30T07:42:29.876Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MemberController.cs",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\MemberController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MemberController.cs",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\MemberController.cs",
+              "RelativeToolTip": "Controllers\\MemberController.cs",
+              "ViewState": "AgIAAE8AAAAAAAAAAAAqwHoAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T02:28:38.934Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+﻿@using X.PagedList.Mvc.Core;  <!-- import this so we get our HTML Helper  -->
+@using X.PagedList;  <!-- import this so we can cast our list to IPagedList-->
+
+@model IPagedList<LottoDto>
+
+@{
+    ViewData["Title"] = "開獎結果";
+}
+
+<style>
+    /*                                               分頁按鈕美化                                                                         */
+    .pagination {
+        display: flex;
+        justify-content: center;                /*      將分頁器置中                                                                      */
+        list-style: none;                       /*      移除預設樣式                                                                    */
+        padding: 0;
+    }
+
+    .page-item {
+        margin: 0 2px;                          /*      調整頁碼間的間距                                                                  */
+    }
+
+    .page-link {
+        padding: 8px 12px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    /*                                                           美化輸入框                                                               */
+    input[type="text"] {
+        width: 300px;
+        padding: 10px;
+        margin-right: 10px;
+        font-size: 16px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        outline: none;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    /*                                                                   美化按鈕                                                            */
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out, transform 0.2s ease;
+    }
+    /*                                                               按鈕懸停時變化                                                            */
+    button:hover {
+        background: linear-gradient(135deg, #2575fc, #6a11cb);
+        transform: scale(1.05);
+    }
+    /*                                                          當輸入框獲得焦點時變化                                                         */
+    input[type="text"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 5px 10px rgba(0, 123, 255, 0.4);
+    }
+
+    /*                                                                  美化表格                                                             */
+        .styled-table {
+        width: 100%;                                /* 表格的寬度設為 100%，讓它自動適應父元素的寬度。                                         */
+        border-collapse: collapse;                  /* 將表格的邊框合併，讓單元格邊緣的線條變成一條，消除多餘的間距。                            */
+        margin: 25px 0;                             /* 在表格上下增加 25px 的間距，讓表格不會緊貼其他元素。                                    */
+        font-size: 18px;                            /* 設定表格內文字的大小為 18px，讓表格內的內容易於閱讀。                                   */
+        text-align: left;                           /* 設定表格內的文字靠左對齊。                                                            */
+        border-radius: 15px;                        /* 讓表格的邊框有 px 的圓角，讓表格看起來更加柔和。                                        */
+        overflow: hidden;                           /* 隱藏超出表格邊框的內容，這與圓角設置配合使用，防止內容超出圓角邊界。                      */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);   /* 0 0 20px rgba(0, 0, 0, 0.15)：為表格添加陰影效果，讓它從頁面上“浮起”一點，使外觀更立體。 */
+    }
+
+    .styled-table thead tr {
+        background-color: #009879;                  /*   設置表格標頭行的背景顏色為綠色（十六進制顏色 #009879），讓標頭更明顯。                  */
+        color: #ffffff;                             /*   設置表格標頭行內文字的顏色為白色，與深色背景形成鮮明對比。                              */
+        text-align: left;                           /*   強制表格標頭內的文字靠左對齊。                                                       */
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px 15px;                         /*   設定每個單元格（包括表頭和表格內容）內的上下間距為 12px，左右間距為 15px，增加內容與邊框之間的空間，讓表格看起來更整齊和易讀。*/
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;           /*    為每一行的底部添加一條 1px 的灰色實線邊框（十六進制顏色 #dddddd），用來區分每行資料。   */
+    }
+
+    .styled-table tbody tr:nth-of-type(even) {      /*    針對偶數行應用此樣式。                                                              */
+        background-color: #e0e0e0 ;                  /*    設置偶數行的背景顏色為淺灰色，實現隔行換色的效果，使表格看起來更清晰，更容易區分不同的行。*/
+    }
+
+    .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;           /*     為最後一行設置一條 2px 寬的綠色實線邊框（與表頭顏色一致），讓表格有更明確的結束線條。   */
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f1f1f1;                  /*    當滑鼠懸停在某一行時，將該行的背景顏色變為淺灰色，增加使用者互動效果，讓使用者容易跟隨內容。*/
+    }
+</style>
+
+<h2>開獎結果</h2>
+<br />
+
+<form action="~/Home/Querylotto" method="get">
+    <input type="text" name="ladder" placeholder=" 請輸入獎期" />
+    <button type="submit">搜尋</button>
+</form>
+<hr />
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>                
+                @Html.DisplayNameFor(model => model.First().Ladder)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Opentime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Num1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Num2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Num3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Num4)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Prizepool)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Iswin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Status)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ladder)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Opentime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Num1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Num2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Num3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Num4)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prizepool)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Iswin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>
+
+
+<hr />
+<br />
+
+<!-- 分頁連結 -->
+@Html.PagedListPager(Model, page => Url.Action("Querylotto", new { page }), new PagedListRenderOptions
+                                                                        {
+                                                                            LiElementClasses = new string[] { "page-item" },
+                                                                            PageClasses = new string[] { "page-link" }
+                                                                        })
+

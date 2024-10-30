@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "首頁";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        /* 計時器容器樣式 */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4); /* 漸層背景 */
+            font-family: Arial, sans-serif;
+        }
+
+        /* 倒數計時顯示區域樣式 */
+        .countdown {
+            font-size: 4em; /* 更大的字體 */
+            color: #333;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 20px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 增加陰影效果 */
+            text-align: center;
+        }
+
+        /* 倒數計時標題樣式 */
+        .countdown-title {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <div class="countdown" id="countdown">
+            <div class="countdown-title">距離下一期開獎</div>
+            <div id="countdown-timer">計算中...</div>
+        </div>
+    </div>
+
+    <script>
+        function startCountdown() {
+            const countdownElement = document.getElementById("countdown-timer");
+
+            function updateCountdown() {
+                const now = new Date();
+                const nextHour = new Date(now);
+                nextHour.setHours(now.getHours() + 1, 0, 0, 0); // 設定下一個整點
+
+                const timeRemaining = nextHour - now;
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000).toString().padStart(2, '0'); // 秒數補上前置0
+
+                countdownElement.textContent = `${minutes} : ${seconds} `;
+
+                // 當倒數結束時自動重設下一個整點的倒數計時
+                if (timeRemaining <= 0) {
+                    clearInterval(countdownInterval);
+                    startCountdown(); // 重啟倒數計時
+                }
+            }
+
+            updateCountdown(); // 立即執行一次以顯示初始倒數
+            const countdownInterval = setInterval(updateCountdown, 1000); // 每秒更新一次倒數
+        }
+
+        document.addEventListener("DOMContentLoaded", startCountdown);
+    </script>
+</body>
+</html>
