@@ -279,3 +279,4 @@ D:\Programming Language\.Net Core MVC\Lotto\bin\Debug\net6.0\runtimes\win\lib\ne
 D:\Programming Language\.Net Core MVC\Lotto\bin\Debug\net6.0\X.PagedList.dll
 D:\Programming Language\.Net Core MVC\Lotto\bin\Debug\net6.0\X.PagedList.Mvc.Core.dll
 D:\Programming Language\.Net Core MVC\Lotto\obj\Debug\net6.0\Lotto.MvcApplicationPartsAssemblyInfo.cs
+D:\Programming Language\.Net Core MVC\Lotto\bin\Debug\net6.0\Dapper.dll

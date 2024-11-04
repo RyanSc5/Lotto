@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "修改Email";
+}
+
+<style>
+    .input-small {
+        width: 250px; /* 設定輸入框的寬度 */
+        max-width: 100%; /* 最大寬度為 100% */
+    }
+
+    .btn-custom {
+        background-color: #d2b48c; /* 按鈕顏色 */
+        color: #fff; /* 按鈕字體顏色 */
+        border: none; /* 移除邊框 */
+        border-radius: 0.5rem; /* 增加圓角 */
+        transition: background-color 0.3s, transform 0.2s; /* 動畫效果 */
+    }
+
+        .btn-custom:hover {
+            background-color: #c19a6b; /* 懸停時的顏色 */
+            transform: scale(1.05); /* 懸停時稍微放大 */
+        }
+
+
+</style>
+
+<div class="container my-5">
+    <form asp-action="Updateinfo_Email" method="post">
+        <div class="card shadow-lg border-0 rounded-4 mb-4 p-4">
+            <div class="d-flex flex-column align-items-center">
+                <input type="text" class="form-control mb-3 input-small" name="mail" placeholder="請輸入新mail" required /> <!-- 輸入框 -->
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <span class="text-danger">@ViewBag.ErrorMessage</span>
+                }
+                <button type="submit" class="btn btn-custom w-20">提交</button> <!-- 提交按鈕 -->
+            </div>
+        </div>
+    </form>
+</div>
+
+
+

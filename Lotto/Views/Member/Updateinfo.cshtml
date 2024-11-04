@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "編輯個人檔案";
+}
+<style>
+    .card {
+        background-color: #f8f9fa; /* 淺色背景 */
+        border-radius: 1rem; /* 增加圓角 */    }
+
+    .btn-custom {
+        background-color: #d2b48c; /* 淺咖啡色 */
+        color: #fff; /* 按鈕字體顏色 */
+        font-size: 1.1rem; /* 增加按鈕字體大小 */
+        padding: 10px; /* 增加內部填充 */
+        border: none; /* 移除邊框 */
+        border-radius: 0.5rem; /* 增加圓角 */
+        transition: background-color 0.3s, transform 0.2s; /* 動畫效果 */
+        width: auto; /* 自動調整寬度 */
+    }
+
+    .btn-custom:hover {
+        background-color: #c19a6b; /* 懸停時的顏色 */
+        transform: scale(1.05); /* 懸停時稍微放大 */
+    }
+
+
+
+</style>
+
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4 mb-4 p-4">
+        <div class="d-flex flex-column align-items-center">
+            <a href="/Member/Updateinfo_login" class="btn btn-custom mb-3 w-50">修改帳號</a>
+            <a href="/Member/Updateinfo_password" class="btn btn-custom mb-3 w-50">修改密碼</a>
+            <a href="/Member/Updateinfo_Email" class="btn btn-custom mb-3 w-50">修改E-mail</a>
+        </div>
+    </div>
+</div>
+
+

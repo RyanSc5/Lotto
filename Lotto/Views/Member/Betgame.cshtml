@@ -4,10 +4,10 @@
     ViewData["Title"] = "下注遊戲";
 }
 
-<h1 class="text-center my-4">下注遊戲</h1>
+<h1 class="text-center my-4">下注</h1>
 
 <div class="container">
-    <form asp-action="Betgame" method="post" class="needs-validation" novalidate>
+    <form asp-action="Betgame" method="post" class="needs-validation"  novalidate id="betForm">
         <div id="betFormContainer">
             <!-- 初始的下注行 -->
             <div class="bet-group row align-items-center mb-3">
@@ -30,25 +30,21 @@
                 <div class="col-md-1">     
                     <label class="form-label">號碼 1</label>
                     <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                    
                 </div>
 
                 <div class="col-md-1">
                     <label class="form-label">號碼 2</label>
                     <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                    
                 </div>
 
                 <div class="col-md-1">
                     <label class="form-label">號碼 3</label>
                     <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                    
                 </div>
 
                 <div class="col-md-1">
                     <label class="form-label">號碼 4</label>
                     <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                    
                 </div>
 
                 <div class="col-md-2 text-center">                    
@@ -57,63 +53,121 @@
                 </div>
             </div>
         </div>
+        <hr />
+        <p>錢包餘額 : <span id="walletBalance">@ViewBag.Wallet</span> 元</p>
+        <p id="totalAmount">總共下注金額: 100 元</p> <!-- 顯示動態總金額的區域 -->
 
         <button type="submit" class="btn btn-primary mt-3">下注</button>
     </form>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // 監聽 "新增一組" 按鈕事件
-            document.querySelector('#betFormContainer').addEventListener('click', function (event) {
-                if (event.target.classList.contains('add-bet')) {
-                    addNewBetRow();
-                }
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                updateTotalAmount();
+
+                // 監聽 "新增一組" 按鈕事件
+                document.querySelector('#betFormContainer').addEventListener('click', function (event) {
+                    if (event.target.classList.contains('add-bet')) {
+                        addNewBetRow();
+                        updateTotalAmount();
+                    }
+                });
+
+                // 監聽 "刪除此組" 按鈕事件
+                document.querySelector('#betFormContainer').addEventListener('click', function (event) {
+                    if (event.target.classList.contains('remove-bet')) {
+                        event.target.closest('.bet-group').remove();
+                        updateTotalAmount();
+                    }
+                });
+
+                // 綁定表單提交事件
+                document.querySelector('form').addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    const isValidNumbers = validateNumbersInRange();
+                    const totalAmount = calculateTotalAmount(); // 假設這裡計算總金額
+                    const walletBalance = parseFloat(document.getElementById('walletBalance').innerText);
+
+                    if (!isValidNumbers) {
+                        // 號碼錯誤訊息已在 validateNumbersInRange 顯示
+                    } else if (totalAmount > walletBalance) {
+                        alert("餘額不足");
+                    } else {
+                        alert("下單成功");
+                        this.submit(); // 若金額足夠且號碼皆有效，才提交表單
+                    }
+                });
             });
-        });
 
-        function addNewBetRow() {
-            // 新的下注行 HTML 結構
-            var newBetRow = `
-                                <div class="bet-group row align-items-center mb-3">
-                                    <div class="col-md-2">
-                                        <input name="Game" class="form-control" value="LottoNumber" readonly required />
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input name="PlayerName" class="form-control" value="@ViewBag.PlayerName" readonly />
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input name="Betamount" class="form-control" type="number" value="100" readonly />
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
-                                    </div>
-                                    <div class="col-md-2 text-center">
-                                        <button type="button" class="btn btn-danger remove-bet">刪除此組</button>
-                                    </div>
-                                </div>`;
+            function addNewBetRow() {
+                var newBetRow = `
+                    <div class="bet-group row align-items-center mb-3">
+                        <div class="col-md-2">
+                            <input name="Game" class="form-control" value="LottoNumber" readonly required />
+                        </div>
+                        <div class="col-md-2">
+                            <input name="PlayerName" class="form-control" value="@ViewBag.PlayerName" readonly />
+                        </div>
+                        <div class="col-md-1">
+                            <input name="Betamount" class="form-control" type="number" value="100" readonly />
+                        </div>
+                        <div class="col-md-1">
+                            <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                        </div>
+                        <div class="col-md-1">
+                            <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                        </div>
+                        <div class="col-md-1">
+                            <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                        </div>
+                        <div class="col-md-1">
+                            <input name="Numbers[]" class="form-control" type="number" min="1" max="50" required />
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <button type="button" class="btn btn-danger remove-bet">刪除此組</button>
+                        </div>
+                    </div>`;
 
-            // 將新的下注行插入表單容器中
-            document.querySelector('#betFormContainer').insertAdjacentHTML('beforeend', newBetRow);
+                document.querySelector('#betFormContainer').insertAdjacentHTML('beforeend', newBetRow);
+            }
+
+            function updateTotalAmount() {
+                const totalAmount = calculateTotalAmount();
+                document.getElementById('totalAmount').textContent = `總共下注金額: ${totalAmount} 元`;
+            }
+
+            function calculateTotalAmount() {
+                const betGroups = document.querySelectorAll('.bet-group');
+                return betGroups.length * 100; // 每組 100 元
+            }
+
+            function validateNumbersInRange() {
+            const betGroups = document.querySelectorAll('.bet-group');
+            for (const group of betGroups) {
+                const numberInputs = group.querySelectorAll('input[name="Numbers[]"]');
+                const numbers = [];
+
+                for (const input of numberInputs) {
+                    const number = parseInt(input.value);
+                    if (isNaN(number) || number < 1 || number > 50) {
+                        alert("所有號碼必須在 1 到 50 之間");
+                        return false;
+                    }
+                    if (numbers.includes(number)) {
+                        alert("號碼不可重複");
+                        return false;
+                    }
+                    numbers.push(number);
+                }
+            }
+            return true;
         }
 
-        // 監聽 "刪除此組" 按鈕事件
-        document.querySelector('#betFormContainer').addEventListener('click', function (event) {
-            if (event.target.classList.contains('remove-bet')) {
-                event.target.closest('.bet-group').remove();
-            }
-        });
-    </script>
+        </script>
 }
+
+

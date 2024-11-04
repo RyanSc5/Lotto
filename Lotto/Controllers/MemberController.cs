@@ -5,12 +5,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 using X.PagedList.Extensions;
 using System.Threading;
+
+/* 下面3個是Dapper加的 */
+using Dapper;  // 引入 Dapper 命名空間
+using Microsoft.Data.SqlClient;  // 引入 SQL Server 的命名空間
+using System.Linq;
+
+/*驗證mail*/
+using System.Net.Mail;
 
 namespace Lotto.Controllers
 {
@@ -57,24 +64,235 @@ namespace Lotto.Controllers
         // 查詢個人資料
 
         public IActionResult Findinfo()
+        {    
+            // 取出玩家帳號的cookie
+            var login = HttpContext.Request.Cookies["Login"];
+
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
+
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
+            {
+                // 定義參數
+                var parameters = new { Login = login };
+
+                // 呼叫 Findinfo 預存程序，並映射結果到 FindinfoDto
+                var result = connection.Query<FindinfoDto>("Findinfo", parameters, commandType: CommandType.StoredProcedure).ToList();
+
+                // 撈出的個人資料內將玩家名稱存入 Cookie
+                if (result.Any())
+                {
+                    var playerInfo = result[0];
+                    var playerNameToStore = playerInfo.PlayerName;
+                    HttpContext.Response.Cookies.Append("PlayerName", playerNameToStore);
+                }
+                else
+                {
+                    return NotFound("No information found for this account.");
+                }
+
+                return View(result);
+            }
+            
+        }
+
+        // 編輯個人資料(選單頁面)
+        public IActionResult Updateinfo()
         {
-            // 取出玩家帳號的cookie , 下面的sp是使用帳號做過濾
-            var Login = HttpContext.Request.Cookies["Login"];
+            return View();
+        }
 
-            var result =  _Context.FindinfoDto.FromSqlRaw($"EXEC Findinfo {Login}").ToList();
+        // 編輯個人資料-帳號
+        public IActionResult Updateinfo_login()
+        {
+            // 取出玩家帳號的cookie
+            ViewBag.login = HttpContext.Request.Cookies["Login"];
+            return View();
+        }
 
-            // 撈出的個人資料內將玩家名稱存入cookie
-            var playerInfo = result.First();
-            var playerNameToStore = playerInfo.PlayerName;
-            HttpContext.Response.Cookies.Append("PlayerName", playerNameToStore);
+        // 編輯個人資料-帳號
+        [HttpPost]
+        public IActionResult Updateinfo_login(string login)
+        {
+            // 先判斷輸入帳號是否符合標準
+            if (login.Length < 8 || login.Length > 20 || !login.Any(char.IsLetter) || !login.Any(char.IsDigit))
+            {
+                ViewBag.login = HttpContext.Request.Cookies["Login"];
+                ViewBag.ErrorMessage = "帳號必須在 8 到 20 個字符之間，且至少包含一個英文字母和一個數字。";
+                return View();
+            }
 
-            return View(result);
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
+
+            // 從cookie取出玩家名稱
+            var playername = HttpContext.Request.Cookies["PlayerName"];
+
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
+            {
+                // 設定存儲過程的參數
+                var parameters = new DynamicParameters();
+                parameters.Add("@PlayerName", playername, DbType.String);
+                parameters.Add("@Login", login, DbType.String);
+                parameters.Add("@status", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                // 呼叫 UpdateLogin 預存程序
+                connection.Execute("UpdateLogin", parameters, commandType: CommandType.StoredProcedure);
+
+                // 獲取返回的 status
+                var status = parameters.Get<int>("@status");
+
+                if (status == -1)
+                {
+                    ViewBag.login = HttpContext.Request.Cookies["Login"];
+                    ViewBag.ErrorMessage = "帳號已存在";
+                }
+                else if (status == 1)
+                {
+                    HttpContext.Response.Cookies.Append("Login", login);
+                    return RedirectToAction("Success", "Member");
+                }
+
+                return View();
+            }
+        }
+
+        // 編輯個人資料-密碼
+        public IActionResult Updateinfo_password()
+        {            
+            return View();
+        }
+
+        // 編輯個人資料-密碼
+        [HttpPost]
+        public IActionResult Updateinfo_password(string password_hint, string password)
+        {
+            // 先判斷輸入密碼是否符合標準
+            if (password.Length < 8 || password.Length > 20 || !password.Any(char.IsLetter) || !password.Any(char.IsDigit))
+            {
+                ViewBag.ErrorMessage = "密碼必須在 8 到 20 個字符之間，且至少包含一個英文字母和一個數字。";
+                return View();
+            }
+
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
+
+            // 從cookie取出玩家名稱
+            var playername = HttpContext.Request.Cookies["PlayerName"];
+
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
+            {
+                // 設定存儲過程的參數
+                var parameters = new DynamicParameters();
+                parameters.Add("@PlayerName", playername, DbType.String);
+                parameters.Add("@Password_hint", password_hint, DbType.String);
+                parameters.Add("@Password", password, DbType.String);
+                parameters.Add("@status", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                // 呼叫 UpdatePassword 預存程序
+                connection.Execute("UpdatePassword", parameters, commandType: CommandType.StoredProcedure);
+
+                // 獲取返回的 status
+                var status = parameters.Get<int>("@status");
+
+                if (status == -1)
+                {
+                    ViewBag.ErrorMessage = "第二組密碼錯誤";
+                }
+                else if (status == -2)
+                {
+                    ViewBag.ErrorMessage = "密碼已存在 , 請使用別組密碼";
+                }
+                else if (status == 1)
+                {
+                    return RedirectToAction("Success", "Member");
+                }
+
+                return View();
+            }
+        }
+
+        // 編輯個人資料-Email
+        public IActionResult Updateinfo_Email()
+        {
+            return View();
+        }
+
+        // 編輯個人資料-Email
+        [HttpPost]
+        public IActionResult Updateinfo_Email(string mail)
+        {
+            // 先判斷輸入mail是否符合標準            
+            try
+            {
+                var addr = new MailAddress(mail);
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = "E-mail格式有誤";
+                return View();
+            }
+
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
+
+            // 從cookie取出玩家名稱
+            var playername = HttpContext.Request.Cookies["PlayerName"];
+
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
+            {
+                // 設定存儲過程的參數
+                var parameters = new DynamicParameters();
+                parameters.Add("@Playername", playername, DbType.String);
+                parameters.Add("@Mail", mail, DbType.String);
+
+                // 呼叫 UpdatePassword 預存程序
+                connection.Execute("UpdateMail", parameters, commandType: CommandType.StoredProcedure);
+
+                return RedirectToAction("Success", "Member");
+
+            }
+        }
+
+        // 成功頁面
+        public IActionResult Success()
+        {
+            return View();
         }
 
         // 下注
         public IActionResult Betgame()
         {
             ViewBag.PlayerName = HttpContext.Request.Cookies["PlayerName"];
+            var Playername = HttpContext.Request.Cookies["PlayerName"];
+
+            var sql = "exec FindWallet @Playername, @Wallet out";
+
+            // 建立輸出參數 , 特別注意Direction為Output
+            var OutputValueParam = new SqlParameter
+            {
+                ParameterName = "@Wallet",
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.Output
+            };
+
+            var parameters = new[]
+            {
+                new SqlParameter("Playername", Playername),
+                OutputValueParam
+            };
+            
+            // 執行SP
+            _Context.Database.ExecuteSqlRaw(sql, parameters);
+
+            // 取出returnValueParam的順位轉成數值
+            int returnValue = Convert.ToInt32(parameters[1].Value);
+
+            ViewBag.Wallet = returnValue;
             return View();
         }
 

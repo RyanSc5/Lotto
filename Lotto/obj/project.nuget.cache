@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "3WQKJHLtjzo=",
+  "dgSpecHash": "v5Wx+M/Gsx4=",
   "success": true,
   "projectFilePath": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Lotto.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\USER\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",

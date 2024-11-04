@@ -13,9 +13,7 @@ namespace Lotto.Dtos
 
         public int Betamount { get; set; }
 
-        [NumberRange(1, 50, ErrorMessage = "號碼必須在 1 到 50 之間")]
-        [Required(ErrorMessage = "必填")]
-        public List<int> Numbers { get; set; } = new List<int>();
+       public List<int> Numbers { get; set; } = new List<int>();
     
 
     }
