@@ -18,6 +18,7 @@ using System.Linq;
 
 /*驗證mail*/
 using System.Net.Mail;
+using Lotto.ViewModel;
 
 namespace Lotto.Controllers
 {
@@ -71,30 +72,50 @@ namespace Lotto.Controllers
             // 定義連線字串，通常從組態中取得
             var connectionString = _Context.Database.GetConnectionString();
 
-            // 使用 Dapper 直接呼叫預存程序
+            // 定義要傳入的物件
+            var viewmodel = new PlayerinfoViewModel();
+
+            // 使用 Dapper 直接呼叫預存程序(查FindinfoDto)
             using (var connection = new SqlConnection(connectionString))
             {
                 // 定義參數
                 var parameters = new { Login = login };
 
                 // 呼叫 Findinfo 預存程序，並映射結果到 FindinfoDto
-                var result = connection.Query<FindinfoDto>("Findinfo", parameters, commandType: CommandType.StoredProcedure).ToList();
+                var FindinfoDto_result = connection.Query<FindinfoDto>("Findinfo", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
 
-                // 撈出的個人資料內將玩家名稱存入 Cookie
-                if (result.Any())
+                // 存入資料進ViewModel
+                if (FindinfoDto_result != null)
                 {
-                    var playerInfo = result[0];
-                    var playerNameToStore = playerInfo.PlayerName;
-                    HttpContext.Response.Cookies.Append("PlayerName", playerNameToStore);
+                    // 把FindinfoDto的結果先存進去
+                    viewmodel.Findinfo = FindinfoDto_result;
+                    // 紀錄玩家名稱的cookie
+                    HttpContext.Response.Cookies.Append("PlayerName", FindinfoDto_result.PlayerName);
                 }
                 else
                 {
                     return NotFound("No information found for this account.");
                 }
-
-                return View(result);
             }
-            
+
+            // 取出玩家名稱的cookie
+            var playername = HttpContext.Request.Cookies["PlayerName"];
+
+            // 使用 Dapper 直接呼叫預存程序(WinningResultDto)
+            using (var connection = new SqlConnection(connectionString))
+            {
+                // 定義參數
+                var parameters = new { Playername = playername };
+
+                // 呼叫 WinningResult 預存程序，並映射結果到 WinningResultDto
+                var WinningResultDto_result = connection.Query<WinningResultDto>("WinningResult", parameters, commandType: CommandType.StoredProcedure).ToList();
+
+                // 存入資料進ViewModel
+                viewmodel.Winningresult = WinningResultDto_result;
+            }
+
+            return View(viewmodel);
+
         }
 
         // 編輯個人資料(選單頁面)

@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\Programming Language\\.Net Core MVC\\Lotto\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\dtos\\winningresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:dtos\\winningresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\viewmodel\\playerinfoviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:viewmodel\\playerinfoviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\views\\member\\findinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:views\\member\\findinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\views\\member\\updateinfo_email.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:views\\member\\updateinfo_email.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\views\\member\\updateinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:views\\member\\updateinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,39 +34,54 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Updateinfo.cshtml",
-              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Updateinfo.cshtml",
-              "RelativeDocumentMoniker": "Views\\Member\\Updateinfo.cshtml",
-              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Updateinfo.cshtml",
-              "RelativeToolTip": "Views\\Member\\Updateinfo.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-04T09:12:16.685Z"
+              "DocumentIndex": 0,
+              "Title": "WinningResult.cs",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Dtos\\WinningResult.cs",
+              "RelativeDocumentMoniker": "Dtos\\WinningResult.cs",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Dtos\\WinningResult.cs",
+              "RelativeToolTip": "Dtos\\WinningResult.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-05T07:11:26.36Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Updateinfo_Email.cshtml",
-              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Updateinfo_Email.cshtml",
-              "RelativeDocumentMoniker": "Views\\Member\\Updateinfo_Email.cshtml",
-              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Updateinfo_Email.cshtml",
-              "RelativeToolTip": "Views\\Member\\Updateinfo_Email.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-04T08:57:12.643Z"
+              "Title": "PlayerinfoViewModel.cs",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\ViewModel\\PlayerinfoViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModel\\PlayerinfoViewModel.cs",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\ViewModel\\PlayerinfoViewModel.cs",
+              "RelativeToolTip": "ViewModel\\PlayerinfoViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-05T06:57:57.602Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "Findinfo.cshtml",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Findinfo.cshtml",
+              "RelativeDocumentMoniker": "Views\\Member\\Findinfo.cshtml",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Views\\Member\\Findinfo.cshtml",
+              "RelativeToolTip": "Views\\Member\\Findinfo.cshtml",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACoAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-05T06:56:14.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "MemberController.cs",
               "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\MemberController.cs",
               "RelativeDocumentMoniker": "Controllers\\MemberController.cs",
               "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\MemberController.cs",
               "RelativeToolTip": "Controllers\\MemberController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAOcAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAswG4AAACeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-04T02:10:54.233Z",
+              "WhenOpened": "2024-11-05T05:54:12.227Z",
               "EditorCaption": ""
             }
           ]

@@ -6,12 +6,14 @@ namespace Lotto.Dtos
     public class RegisterDto
     {
         [Required(ErrorMessage = "帳號為必填")]
-        [RegularExpression(@"^[A-Za-z\d]{8,20}$", ErrorMessage = "帳號必須是 8 到 20 個僅包含字母和數字的字元，且必須包含至少一個字母和一個數字")]
+        /*[RegularExpression(@"^[A-Za-z\d]{8,20}$", ErrorMessage = "密碼必須是 8 到 20 個僅包含字母和數字的字元，且必須包含至少一個字母或一個數字")]*/
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$", ErrorMessage = "帳號必須是 8 到 20 個字元，且包含至少一個字母和一個數字")]
         [DisplayName("帳號")]
         public string Login { get; set; } = null!;
 
         [Required(ErrorMessage = "密碼為必填")]
-        [RegularExpression(@"^[A-Za-z\d]{8,20}$", ErrorMessage = "密碼必須是 8 到 20 個僅包含字母和數字的字元，且必須包含至少一個字母和一個數字")]
+        /*[RegularExpression(@"^[A-Za-z\d]{8,20}$", ErrorMessage = "密碼必須是 8 到 20 個僅包含字母和數字的字元，且必須包含至少一個字母或一個數字")]*/
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$", ErrorMessage = "帳號必須是 8 到 20 個字元，且包含至少一個字母和一個數字")]
         [DisplayName("密碼")]
         public string Password { get; set; } = null!;
 
