@@ -16,11 +16,6 @@ namespace Lotto.Models
             : base(options)
         {
         }
-        // 查詢樂透號碼使用的SET
-        public virtual DbSet<LottoDto> LottoDto { get; set; } = null!;
-
-        // 查詢個人資料使用的SET
-        //public virtual DbSet<FindinfoDto> FindinfoDto { get; set; } = null!;
 
         // 下注使用的SET
         public virtual DbSet<BetgameDto> BetgameDto { get; set; } = null!;

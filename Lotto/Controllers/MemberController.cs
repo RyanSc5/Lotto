@@ -18,6 +18,7 @@ using System.Linq;
 
 /*驗證mail*/
 using System.Net.Mail;
+
 using Lotto.ViewModel;
 
 namespace Lotto.Controllers
@@ -37,6 +38,7 @@ namespace Lotto.Controllers
         {
             return View();
         }
+
         // 遊戲介紹
         public IActionResult Index()
         {
@@ -44,26 +46,37 @@ namespace Lotto.Controllers
         }
 
         // 開獎結果
-        public async Task<IActionResult> Querylotto(int? ladder, int? page)
+        public IActionResult Querylotto(int? ladder, int? page)
         {
-            // 設定一頁20筆資料
+            // 設定一頁10筆資料
             int Pagesize = 10;
             // 設定目前的頁數 , 預設第一頁
             int pageNumber = (page ?? 1);
 
-            if (ladder != null)
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
+
+            // 使用 Dapper 呼叫預存程序(FindLottoResult)
+            using (var connection = new SqlConnection(connectionString))
             {
-                var result1 = await _Context.LottoDto.FromSqlRaw($"EXEC LottoResult_one {ladder}").ToListAsync();
-                return View(result1.ToPagedList(pageNumber, Pagesize));
+                // 獎期查詢
+                if (ladder != null)
+                {
+                    // 定義參數
+                    var parameters = new { Ladder = ladder };
+
+                    // SP執行
+                    var result = connection.Query<LottoDto>("FindLottoResult", parameters, commandType: CommandType.StoredProcedure).ToList();
+                    return View(result.ToPagedList(pageNumber, Pagesize));
+                }
+
+                // 查前100筆
+                var result_all = connection.Query<LottoDto>("FindLottoResult", null, commandType: CommandType.StoredProcedure).ToList();
+                return View(result_all.ToPagedList(pageNumber, Pagesize));
             }
-
-            var result2 = await _Context.LottoDto.FromSqlRaw("EXEC LottoResult").ToListAsync();
-
-            return View(result2.ToPagedList(pageNumber, Pagesize));
         }
 
         // 查詢個人資料
-
         public IActionResult Findinfo()
         {    
             // 取出玩家帳號的cookie
@@ -72,7 +85,7 @@ namespace Lotto.Controllers
             // 定義連線字串，通常從組態中取得
             var connectionString = _Context.Database.GetConnectionString();
 
-            // 定義要傳入的物件
+            // 定義要傳入的ViewModel
             var viewmodel = new PlayerinfoViewModel();
 
             // 使用 Dapper 直接呼叫預存程序(查FindinfoDto)
@@ -275,7 +288,6 @@ namespace Lotto.Controllers
                 connection.Execute("UpdateMail", parameters, commandType: CommandType.StoredProcedure);
 
                 return RedirectToAction("Success", "Member");
-
             }
         }
 
@@ -288,33 +300,34 @@ namespace Lotto.Controllers
         // 下注
         public IActionResult Betgame()
         {
+            // 取出玩家名稱cookie
             ViewBag.PlayerName = HttpContext.Request.Cookies["PlayerName"];
             var Playername = HttpContext.Request.Cookies["PlayerName"];
 
-            var sql = "exec FindWallet @Playername, @Wallet out";
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
 
-            // 建立輸出參數 , 特別注意Direction為Output
-            var OutputValueParam = new SqlParameter
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
             {
-                ParameterName = "@Wallet",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Output
-            };
+                // 設定存儲過程的參數(輸入)
+                var parameters = new DynamicParameters();
+                parameters.Add("@Playername", Playername, DbType.String);
+                
+                // 設定存儲過程的參數(輸出)
+                parameters.Add("@Wallet", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            var parameters = new[]
-            {
-                new SqlParameter("Playername", Playername),
-                OutputValueParam
-            };
-            
-            // 執行SP
-            _Context.Database.ExecuteSqlRaw(sql, parameters);
+                // 呼叫 FindWallet 預存程序
+                connection.Execute("FindWallet", parameters, commandType: CommandType.StoredProcedure);
 
-            // 取出returnValueParam的順位轉成數值
-            int returnValue = Convert.ToInt32(parameters[1].Value);
+                // 取得輸出參數的值                
+                int resultCount_Wallet = parameters.Get<int>("@Wallet");
 
-            ViewBag.Wallet = returnValue;
-            return View();
+                // 餘額帶去頁面
+                ViewBag.Wallet = resultCount_Wallet;
+
+                return View();
+            }
         }
 
         // 下注
@@ -329,36 +342,32 @@ namespace Lotto.Controllers
                 return View(betgame);
             }
 
-            // T-SQL 特別注意有輸出參數需加上out
-            var sql = "exec Betgame @Game, @PlayerName, @Betamount, @Num1, @Num2, @Num3, @Num4";
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
 
-            for (int i = 1; i <= betgame.Numbers.Count/4; i++)
+            for (int i = 1; i <= betgame.Numbers.Count / 4; i++)
             {
-                // 建立參數
-                var parameters = new[]
+                // 使用 Dapper 直接呼叫預存程序
+                using (var connection = new SqlConnection(connectionString))
                 {
-                    new SqlParameter("@Game", betgame.Game),
-                    new SqlParameter("@PlayerName", betgame.PlayerName),
-                    new SqlParameter("@Betamount", betgame.Betamount),
-                    new SqlParameter("@Num1", betgame.Numbers[4*i-4]), 
-                    new SqlParameter("@Num2", betgame.Numbers[4*i-3]),
-                    new SqlParameter("@Num3", betgame.Numbers[4*i-2]),
-                    new SqlParameter("@Num4", betgame.Numbers[4*i-1])
-                };
+                    // 設定存儲過程的參數(輸入)
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@Game", betgame.Game, DbType.String);
+                    parameters.Add("@PlayerName", betgame.PlayerName, DbType.String);
+                    parameters.Add("@Betamount", betgame.Betamount, DbType.Int32);
+                    parameters.Add("@Num1", betgame.Numbers[4*i-4], DbType.Int32);
+                    parameters.Add("@Num2", betgame.Numbers[4*i-3], DbType.Int32);
+                    parameters.Add("@Num3", betgame.Numbers[4*i-2], DbType.Int32);
+                    parameters.Add("@Num4", betgame.Numbers[4*i-1], DbType.Int32);
 
-
-                // 執行 SQL 命令
-                _Context.Database.ExecuteSqlRaw(sql, parameters);
-
-                // 暫停半秒（100毫秒）
-                Thread.Sleep(100);
-            }              
-
+                    // 呼叫 Betgame 預存程序
+                    connection.Execute("Betgame", parameters, commandType: CommandType.StoredProcedure);                    
+                }
+            }
             return RedirectToAction("Findtran", "Member");
         }
 
         // 查詢個人交易紀錄
-
         public IActionResult Findtran(int? ladder, int? page, int? today_ladder)
         {
 
@@ -368,50 +377,45 @@ namespace Lotto.Controllers
             int pageNumber = (page ?? 1);
 
             // 取出玩家帳號的cookie , 下面的sp是使用帳號做過濾
-            var Login = HttpContext.Request.Cookies["PlayerName"];
+            var playername = HttpContext.Request.Cookies["PlayerName"];
 
-            // T-SQL 特別注意有輸出參數需加上out
-            var sql = "exec Findtran @PlayerName";
-            var sql_one = "exec Findtran_ladder @PlayerName, @ladder";
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
 
-            // 建立參數
-            var parameters = new List<SqlParameter>
+            // 使用 Dapper 呼叫預存程序(Findtran)
+            using (var connection = new SqlConnection(connectionString))
             {
-            new SqlParameter("@PlayerName", Login)
-            };
+                // 定義參數
+                var parameters = new DynamicParameters();
+                parameters.Add("PlayerName", playername);
 
-            var parameters_one = new[]
-            {
-            new SqlParameter("@PlayerName", Login),
-            new SqlParameter("@ladder", ladder)
-            };
+                // 查今日或全部(看Findtran.cshtml)
+                if (today_ladder != null)
+                {
+                    // 加入參數
+                    parameters.Add("Today_Ladder", today_ladder);
 
-            // 單一獎期查詢
-            if (ladder != null) // 查獎期
-            {
-                ViewBag.ladder = ladder;
-                var result1 = _Context.FindtranDto.FromSqlRaw(sql_one, parameters_one).ToList();
-                return View(result1.ToPagedList(pageNumber, Pagesize));
+                    // SP執行
+                    var result_today_ladder = connection.Query<FindtranDto>("Findtran", parameters, commandType: CommandType.StoredProcedure).ToList();
+                    return View(result_today_ladder.ToPagedList(pageNumber, Pagesize));
+                }
+                // 查獎期
+                else if (ladder != null)
+                {
+                    ViewBag.ladder = ladder;
+
+                    // 加入參數
+                    parameters.Add("ladder", ladder);
+
+                    // SP執行
+                    var result_ladder = connection.Query<FindtranDto>("Findtran_ladder", parameters, commandType: CommandType.StoredProcedure).ToList();
+                    return View(result_ladder.ToPagedList(pageNumber, Pagesize));
+                }
+
+                // SP執行
+                var result = connection.Query<FindtranDto>("Findtran", parameters, commandType: CommandType.StoredProcedure).ToList();
+                return View(result.ToPagedList(pageNumber, Pagesize));
             }
-            else if (today_ladder != null) // 查今日
-            {
-                parameters.Add(new SqlParameter("@Today_Ladder", today_ladder));
-
-                sql = sql + ", @Today_Ladder";
-
-                // 把list轉為[]
-                var sqlParameters_day = parameters.ToArray();
-
-                var result2 = _Context.FindtranDto.FromSqlRaw(sql, sqlParameters_day).ToList();
-                return View(result2.ToPagedList(pageNumber, Pagesize));
-            }
-
-            // 把list轉為[]
-            var sqlParameters = parameters.ToArray();
-            // 執行 SQL 命令
-            var result = _Context.FindtranDto.FromSqlRaw(sql, sqlParameters).ToList();
-            return View(result.ToPagedList(pageNumber, Pagesize));
-            
         }
 
         // 登出

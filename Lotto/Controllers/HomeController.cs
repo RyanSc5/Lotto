@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using X.PagedList.Extensions;
+using Dapper;
 
 namespace Lotto.Controllers
 {
@@ -43,61 +44,55 @@ namespace Lotto.Controllers
         // 會員註冊
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        public IActionResult Register(RegisterDto registerdto)
         {
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
 
-            // T-SQL 特別注意有輸出參數需加上out
-            var sql = "exec CreatePlayer @PlayerName, @Login, @Password, @Email, @Password_hint, @Status out";
-
-            // 建立輸出參數 , 特別注意Direction為Output
-            var returnValueParam = new SqlParameter
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
             {
-                ParameterName = "@Status",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Output
-            };
+                // 設定存儲過程的參數(輸入)
+                var parameters = new DynamicParameters();
+                parameters.Add("@Playername", registerdto.PlayerName, DbType.String);
+                parameters.Add("@Login", registerdto.Login, DbType.String);
+                parameters.Add("@Password", registerdto.Password, DbType.String);
+                parameters.Add("@Email", registerdto.Email, DbType.String);
+                parameters.Add("@Password_hint", registerdto.Password_hint, DbType.String);
 
-            // 建立參數
-            var parameters = new[]
-            {
-            new SqlParameter("@PlayerName", registerDto.PlayerName),
-            new SqlParameter("@Login", registerDto.Login),
-            new SqlParameter("@Password", registerDto.Password),
-            new SqlParameter("@Email", registerDto.Email),
-            new SqlParameter("@Password_hint", registerDto.Password_hint),
-            returnValueParam
-            };
+                // 設定存儲過程的參數(輸出)
+                parameters.Add("@Status", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            // 執行 SQL 命令
-            var result = await _Context.Database.ExecuteSqlRawAsync(sql, parameters);
+                // 呼叫 CreatePlayer 預存程序
+                connection.Execute("CreatePlayer", parameters, commandType: CommandType.StoredProcedure);
 
-            // 取出returnValueParam的順位轉成數值
-            int returnValue = Convert.ToInt32(parameters[5].Value);
+                // 取得輸出參數的值
+                int resultCount = parameters.Get<int>("@Status");
 
-            // 判斷輸出狀態
-            if (returnValue == -1)
-            {
-                // 帳號重複 , 加入ModelState
-                ModelState.AddModelError("Login", "帳號已經存在");
+                if (resultCount == -1)
+                {
+                    // 帳號重複 , 加入ModelState
+                    ModelState.AddModelError("Login", "帳號已經存在");
+                }
+                else if (resultCount == -2)
+                {
+                    // 密碼重複 , 加入ModelState
+                    ModelState.AddModelError("Password", "密碼已經存在");
+                }
+                else if (resultCount == -3)
+                {
+                    // 名稱重複 , 加入ModelState
+                    ModelState.AddModelError("PlayerName", "名稱已經存在");
+                }
+                else if (resultCount == 1)
+                {
+                    // 註冊成功
+                    TempData["SuccessOfRegister"] = "註冊成功";
+                    return RedirectToAction(nameof(Login));
+                }
+
+                return View(registerdto);
             }
-            else if (returnValue == -2)
-            {
-                // 密碼重複 , 加入ModelState
-                ModelState.AddModelError("Password", "密碼已經存在");
-            }
-            else if (returnValue == -3)
-            {
-                // 名稱重複 , 加入ModelState
-                ModelState.AddModelError("PlayerName", "名稱已經存在");
-            }
-            else if (returnValue == 1)
-            {
-                // 註冊成功
-                return RedirectToAction(nameof(Login));
-            }
-
-            return View(registerDto);
-
         }
 
         // 登入畫面
@@ -107,99 +102,100 @@ namespace Lotto.Controllers
             return View();
         }
 
-
         // 登入畫面
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        public IActionResult Login(LoginDto loginDto)
         {
-            // T-SQL 特別注意有輸出參數需加上out
-            var sql = "exec LoginCheck @Login, @Password, @Status out";
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
 
-            // 建立輸出參數 , 特別注意Direction為Output
-            var OutputValueParam = new SqlParameter
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
             {
-                ParameterName = "@Status",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Output
-            };
+                // 設定存儲過程的參數(輸入)
+                var parameters = new DynamicParameters();
+                parameters.Add("@Login", loginDto.Login, DbType.String);
+                parameters.Add("@Password", loginDto.Password, DbType.String);               
 
-            // 建立參數
-            var parameters = new[]
-            {
-            new SqlParameter("@Login", loginDto.Login),
-            new SqlParameter("@Password", loginDto.Password),
-            OutputValueParam
-            };
+                // 設定存儲過程的參數(輸出)
+                parameters.Add("@Status", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            // 執行 SQL 命令
-            var result = await _Context.Database.ExecuteSqlRawAsync(sql, parameters);
+                // 呼叫 LoginCheck 預存程序
+                connection.Execute("LoginCheck", parameters, commandType: CommandType.StoredProcedure);
 
-            // 取出returnValueParam的順位轉成數值
-            int returnValue = Convert.ToInt32(parameters[2].Value);
-              
-            // 判斷輸出狀態
-            if (returnValue == -1)
-            {
-                // 帳號錯誤
-                ModelState.AddModelError("Login", "帳號錯誤");
-            }
-            else if (returnValue == -2)
-            {
-                // 密碼錯誤
-                ModelState.AddModelError("Password", "密碼錯誤");
-            }
-            else if (returnValue == 1)
-            {
+                // 取得輸出參數的值
+                int resultCount = parameters.Get<int>("@Status");
 
-                // 將User的帳號存入cookie
-                HttpContext.Response.Cookies.Append("Login", loginDto.Login);
-                // 註冊成功
-
-                // 驗證開始-------------------------------------------------------------------------------------------------------驗證開始
-                var claims = new List<Claim>
+                if (resultCount == -1)
                 {
-                    new Claim(ClaimTypes.Name, loginDto.Login) // 將用戶名加入聲明中
-                };
-                // 創建 ClaimsIdentity
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    // 帳號錯誤
+                    ModelState.AddModelError("Login", "帳號錯誤");
+                }
+                else if (resultCount == -2)
+                {
+                    // 密碼錯誤
+                    ModelState.AddModelError("Password", "密碼錯誤");
+                }
+                else if (resultCount == 1)
+                {
+                    // 將User的帳號存入cookie
+                    HttpContext.Response.Cookies.Append("Login", loginDto.Login);
+                    // 註冊成功
 
-                // 創建 ClaimsPrincipal
-                var userPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    // 驗證開始-------------------------------------------------------------------------------------------------------驗證開始
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, loginDto.Login) // 將用戶名加入聲明中
+                    };
+                    // 創建 ClaimsIdentity
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // 簽入用戶
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
+                    // 創建 ClaimsPrincipal
+                    var userPrincipal = new ClaimsPrincipal(claimsIdentity);
 
+                    // 簽入用戶
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
-                // 驗證結束-------------------------------------------------------------------------------------------------------驗證結束
+                    // 驗證結束-------------------------------------------------------------------------------------------------------驗證結束
 
-                return RedirectToAction("Findinfo", "Member");
+                    return RedirectToAction("Findinfo", "Member");
+                }
+
+                return View(loginDto);
             }
-
-            return View();
+            
         }
 
         // 開獎結果
-        public async Task<IActionResult> Querylotto(int? ladder, int? page)
+        public IActionResult Querylotto(int? ladder, int? page)
         {
-            // 設定一頁20筆資料
+            // 設定一頁10筆資料
             int Pagesize = 10;
             // 設定目前的頁數 , 預設第一頁
             int pageNumber = (page ?? 1);
 
-            if (ladder != null)
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
+
+            // 使用 Dapper 呼叫預存程序(FindLottoResult)
+            using (var connection = new SqlConnection(connectionString))
             {
-                var result1 = await _Context.LottoDto.FromSqlRaw($"EXEC LottoResult_one {ladder}").ToListAsync();
-                return View(result1.ToPagedList(pageNumber, Pagesize));
+                // 獎期查詢
+                if (ladder != null)
+                {
+                    // 定義參數
+                    var parameters = new { Ladder = ladder };
+
+                    // SP執行
+                    var result = connection.Query<LottoDto>("FindLottoResult", parameters, commandType: CommandType.StoredProcedure).ToList();
+                    return View(result.ToPagedList(pageNumber, Pagesize));
+                }
+
+                // 查前100筆
+                var result_all = connection.Query<LottoDto>("FindLottoResult", null, commandType: CommandType.StoredProcedure).ToList();
+                return View(result_all.ToPagedList(pageNumber, Pagesize));
             }
 
-            var result2 = await _Context.LottoDto.FromSqlRaw("EXEC LottoResult").ToListAsync();
-
-            return View(result2.ToPagedList(pageNumber, Pagesize));
-        }
-
-        public string Sucess()
-        {
-            return "success";
         }
 
         // 找回密碼
@@ -212,55 +208,43 @@ namespace Lotto.Controllers
         [HttpPost]
         public IActionResult Findpassword(FindpasswordDto findpassword)
         {
-            // T-SQL 特別注意有輸出參數需加上out
-            var sql = "exec Findpassword @PlayerName, @Password_hint, @Password out, @Status out";
+            // 定義連線字串，通常從組態中取得
+            var connectionString = _Context.Database.GetConnectionString();
 
-            // 建立輸出參數 , 特別注意Direction為Output
-            var OutputValueParam_Password = new SqlParameter
+            // 使用 Dapper 直接呼叫預存程序
+            using (var connection = new SqlConnection(connectionString))
             {
-                ParameterName = "@Password",
-                SqlDbType = SqlDbType.NVarChar,
-                Size = 20,
-                Direction = ParameterDirection.Output
-            };
+                // 設定存儲過程的參數(輸入)
+                var parameters = new DynamicParameters();
+                parameters.Add("@PlayerName", findpassword.PlayerName, DbType.String);
+                parameters.Add("@Password_hint", findpassword.Password_hint, DbType.String);               
 
-            var OutputValueParam_Status = new SqlParameter
-            {
-                ParameterName = "@Status",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Output
-            };
+                // 設定存儲過程的參數(輸出)
+                parameters.Add("@Password", dbType: DbType.String, direction: ParameterDirection.Output, size: 50);
+                parameters.Add("@Status", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            // 建立參數
-            var parameters = new[]
-            {
-            new SqlParameter("@PlayerName", findpassword.PlayerName),
-            new SqlParameter("@Password_hint", findpassword.Password_hint),
-            OutputValueParam_Password,
-            OutputValueParam_Status
-            };
+                // 呼叫 Findpassword 預存程序
+                connection.Execute("Findpassword", parameters, commandType: CommandType.StoredProcedure);
 
-            // 執行 SQL 命令
-            var result = _Context.Database.ExecuteSqlRaw(sql, parameters);
+                // 取得輸出參數的值
+                string resultCount_Password = parameters.Get<string>("@Password");
+                int resultCount_Status = parameters.Get<int>("@Status");
 
-            // 取出returnValueParam的順位轉成數值
-            string getpassword = Convert.ToString(OutputValueParam_Password.Value);
-            int getstatus = Convert.ToInt32(parameters[3].Value); ;
+                // 判斷輸出狀態
+                if (resultCount_Status == -1)
+                {
+                    // 查詢不到
+                    ModelState.AddModelError("PlayerName", "名稱或第二組密碼有誤");
+                    ViewBag.Password = "";
+                }
+                else if (resultCount_Status == 1)
+                {
+                    // 查詢得到
+                    ViewBag.Password = resultCount_Password;
+                }
 
-            // 判斷輸出狀態
-            if (getstatus == -1)
-            {
-                // 查詢不到
-                ModelState.AddModelError("PlayerName", "名稱或第二組密碼有誤");
-                ViewBag.Password = "";
+                return View();
             }
-            else if (getstatus == 1)
-            {
-                // 查詢得到
-                ViewBag.Password = getpassword;
-            }
-
-            return View();
         }
 
     }

@@ -4,6 +4,7 @@
     ViewData["Title"] = "登入";
 }
 
+
 <style>
     body {
         background-color: #f0f2f5; /* 背景顏色 */
@@ -72,4 +73,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @if (TempData["SuccessOfRegister"] != null)
+    {
+        <script>            
+            window.alert("@Html.Raw(TempData["SuccessOfRegister"])");
+        </script>
+    }
 }
+
+
