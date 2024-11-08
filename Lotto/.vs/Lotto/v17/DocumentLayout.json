@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "D:\\Programming Language\\.Net Core MVC\\Lotto\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\models\\gamecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:models\\gamecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|d:\\programming language\\.net core mvc\\lotto\\controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{743173A3-F3D5-4359-B276-D0B0CC6FA6B2}|Lotto.csproj|solutionrelative:controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -18,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,7 +34,33 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GameContext.cs",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Models\\GameContext.cs",
+              "RelativeDocumentMoniker": "Models\\GameContext.cs",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Models\\GameContext.cs",
+              "RelativeToolTip": "Models\\GameContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T08:32:10.016Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-11-08T08:27:42.864Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "HomeController.cs",
               "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
@@ -34,18 +68,17 @@
               "RelativeToolTip": "Controllers\\HomeController.cs",
               "ViewState": "AgIAAMgAAAAAAAAAAAAgwPAAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-06T06:52:01.261Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-06T06:52:01.261Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "MemberController.cs",
               "DocumentMoniker": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\MemberController.cs",
               "RelativeDocumentMoniker": "Controllers\\MemberController.cs",
               "ToolTip": "D:\\Programming Language\\.Net Core MVC\\Lotto\\Controllers\\MemberController.cs",
               "RelativeToolTip": "Controllers\\MemberController.cs",
-              "ViewState": "AgIAAAMBAAAAAAAAAAA6wE0BAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-06T03:11:57.934Z",
               "EditorCaption": ""

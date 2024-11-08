@@ -1,0 +1,38 @@
+----------請看清楚執行環境----------
+
+/*
+----------在SSMS上執行----------
+Step 1. 
+還原資料庫 ,
+請自行更改備份檔路徑 ,
+將你電腦的核心數數目更改到BUFFERCOUNT參數 ,
+MAXTRANSFERSIZE可加速還原。
+*/
+USE [master]
+RESTORE DATABASE [Game] FROM  DISK = N'D:\Backup\Game\Game_20241108_Full.bak' 
+WITH  FILE = 1,  NOUNLOAD,  STATS = 5, MAXTRANSFERSIZE = 4194304, BUFFERCOUNT = 24
+
+
+/*
+----------在SSMS上執行----------
+Step 2.
+建立Login , Login名稱為[lotto]
+連線將使用lotto做登入 ,
+切記需指定sid
+*/
+
+USE [master]
+GO
+
+CREATE LOGIN [lotto] WITH PASSWORD=N'1qaz@WSX', DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE=[繁體中文],
+CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF, sid = 0xE318B988317A704B89802A187B45AF7D
+GO
+
+/*
+----------在VS上執行----------
+Step 3.
+打開套件管理器主控台並執行,
+確保DB的Model完全對映至專案。
+*/
+
+Scaffold-DbContext "Server=127.0.0.1;Database=Game;User ID=lotto;Password=1qaz@WSX;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -UseDatabaseNames -NoPluralize -Force

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Lotto.Models
 {
-    public partial class LottoNumber
+    public partial class LottoNumber_ARCHIVE
     {
         public int LottoId { get; set; }
         public int Ladder { get; set; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Lotto.Models
 {
-    public partial class Betticket
+    public partial class Betticket_ARCHIVE
     {
         public int BetId { get; set; }
         public string? Game { get; set; }
